@@ -15,31 +15,26 @@ var Movies = Backbone.Collection.extend({
   model: Movie,
 
   initialize: function() {
-    //this.comparator.field = 'title';
     this.on('change', this.sort, this);
   },
 
-  comparator: 'title'
-  // function(a, b) {
-  //   if (a.get(this.comparator.field) < b.get(this.comparator.field)) {
-  //     return -1;
-  //   } else if (a.get(this.comparator.field) > b.get(this.comparator.field)) {
-  //     return 1;
-  //   } else {
-  //     return 0;
-  //   }
-  // }
-  ,
+  comparator: 'title',
 
   sortByField: function(field) {
-    this['comparator'] = field;
+    if (this['comparator'] === field) {
+      //if radio is pressed again, reverse
+      this['comparator'] = function(a, b) {
+        return (a.get(field) > b.get(field)) ? -1 : (a.get(field) < b.get(field)) ? 1 : 0;
+      }
+    } else {
+      this['comparator'] = field;
+    }
     this.sort();
   }
 
 });
 
 var AppView = Backbone.View.extend({
-
   events: {
     'click form input': 'handleClick'
   },
